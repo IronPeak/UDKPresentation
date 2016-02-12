@@ -13,6 +13,9 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AUDKPresentationCharacter::AUDKPresentationCharacter()
 {
+	maxJump = 1;
+	currentJump = 0;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -48,6 +51,32 @@ AUDKPresentationCharacter::AUDKPresentationCharacter()
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void AUDKPresentationCharacter::Jump()
+{
+	if (CharacterMovement->IsMovingOnGround()) {
+		currentJump = 0;
+		bPressedJump = true;
+		JumpKeyHoldTime = 0.0f;
+	}
+	else {
+		DoubleJump();
+	}
+}
+
+void AUDKPresentationCharacter::DoubleJump() {
+	if (currentJump < maxJump) {
+		CharacterMovement->Velocity.Z = 0;
+		CharacterMovement->Velocity += FVector(0, 0, 500);
+		currentJump++;
+	}
+}
+
+void AUDKPresentationCharacter::StopJumping()
+{
+	bPressedJump = false;
+	JumpKeyHoldTime = 0.0f;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -56,8 +85,8 @@ void AUDKPresentationCharacter::SetupPlayerInputComponent(class UInputComponent*
 	// set up gameplay key bindings
 	check(InputComponent);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AUDKPresentationCharacter::Jump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AUDKPresentationCharacter::StopJumping);
 	
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AUDKPresentationCharacter::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
@@ -85,6 +114,9 @@ void AUDKPresentationCharacter::OnFire()
 		const FRotator SpawnRotation = GetControlRotation();
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+
+		const FVector RecoilVector = (GetActorLocation() - SpawnLocation);
+		CharacterMovement->Velocity += RecoilVector * 10;
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
