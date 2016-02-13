@@ -52,6 +52,13 @@ AUDKPresentationCharacter::AUDKPresentationCharacter()
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void AUDKPresentationCharacter::UpdateAmmo()
+{
+	if (CharacterMovement->IsMovingOnGround()) {
+		ammo = maxAmmo;
+	}
+}
+
 void AUDKPresentationCharacter::MoreAmmo()
 {
 	maxAmmo++;
@@ -128,7 +135,6 @@ void AUDKPresentationCharacter::SetupPlayerInputComponent(class UInputComponent*
 
 void AUDKPresentationCharacter::OnFire()
 { 
-
 	if (CharacterMovement->IsMovingOnGround()) {
 		ammo = maxAmmo;
 	}

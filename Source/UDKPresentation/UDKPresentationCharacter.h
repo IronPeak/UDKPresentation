@@ -31,7 +31,9 @@ class AUDKPresentationCharacter : public ACharacter
 public:
 	AUDKPresentationCharacter();
 
-	UFUNCTION(BlueprintCallable, Category = Ammo)
+	UFUNCTION(BlueprintCallable, Category = TickAmmo)
+	void UpdateAmmo();
+	UFUNCTION(BlueprintCallable, Category = SetAmmo)
 	void MoreAmmo();
 	//UFUNCTION(BlueprintCallable, Category = "Ammo")
 	int GetAmmo();
