@@ -15,7 +15,8 @@ AUDKPresentationCharacter::AUDKPresentationCharacter()
 {
 	maxJump = 1;
 	currentJump = 0;
-
+	maxAmmo = 3;
+	ammo = maxAmmo;
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -51,12 +52,18 @@ AUDKPresentationCharacter::AUDKPresentationCharacter()
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+void AUDKPresentationCharacter::MoreAmmo()
+{
+	maxAmmo++;
+}
+
 void AUDKPresentationCharacter::Jump()
 {
 	if (CharacterMovement->IsMovingOnGround()) {
 		currentJump = 0;
 		bPressedJump = true;
 		JumpKeyHoldTime = 0.0f;
+		ammo = maxAmmo;
 	}
 	else {
 		DoubleJump();
@@ -108,6 +115,11 @@ void AUDKPresentationCharacter::SetupPlayerInputComponent(class UInputComponent*
 
 void AUDKPresentationCharacter::OnFire()
 { 
+
+	if (CharacterMovement->IsMovingOnGround()) {
+		ammo = maxAmmo;
+	}
+	if (ammo <= 0) return;
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
@@ -115,6 +127,7 @@ void AUDKPresentationCharacter::OnFire()
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
 
+		ammo--;
 		CharacterMovement->Velocity = GetControlRotation().Vector()*(-1000) + 0.5f * CharacterMovement->Velocity;
 
 		UWorld* const World = GetWorld();

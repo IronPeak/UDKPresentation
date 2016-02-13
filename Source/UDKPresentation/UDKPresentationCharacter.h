@@ -24,12 +24,17 @@ class AUDKPresentationCharacter : public ACharacter
 
 	int maxJump;
 	int currentJump;
+	int ammo;
+	int maxAmmo;
 	void Jump();
 	void DoubleJump();
 	void StopJumping();
 
 public:
 	AUDKPresentationCharacter();
+
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+	void MoreAmmo();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
