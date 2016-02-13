@@ -57,6 +57,19 @@ void AUDKPresentationCharacter::MoreAmmo()
 	maxAmmo++;
 }
 
+int AUDKPresentationCharacter::GetMaxAmmo()
+{
+	return maxAmmo;
+}
+
+int AUDKPresentationCharacter::GetAmmo()
+{
+	if (CharacterMovement->IsMovingOnGround()) {
+		ammo = maxAmmo;
+	}
+	return ammo;
+}
+
 void AUDKPresentationCharacter::Jump()
 {
 	if (CharacterMovement->IsMovingOnGround()) {

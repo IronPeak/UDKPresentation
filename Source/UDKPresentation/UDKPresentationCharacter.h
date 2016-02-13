@@ -22,19 +22,26 @@ class AUDKPresentationCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
-	int maxJump;
-	int currentJump;
-	int ammo;
-	int maxAmmo;
 	void Jump();
 	void DoubleJump();
 	void StopJumping();
+	int maxJump;
+	int currentJump;
 
 public:
 	AUDKPresentationCharacter();
 
-	UFUNCTION(BlueprintCallable, Category = "Ammo")
+	UFUNCTION(BlueprintCallable, Category = Ammo)
 	void MoreAmmo();
+	//UFUNCTION(BlueprintCallable, Category = "Ammo")
+	int GetAmmo();
+	//UFUNCTION(BlueprintCallable, Category = "Ammo")
+	int GetMaxAmmo();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ammo)
+	float ammo;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ammo)
+	float maxAmmo;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
